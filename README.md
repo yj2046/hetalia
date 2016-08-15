@@ -76,19 +76,19 @@ $ npm install bower -g
 * 默认的dev模式，用于本地调试，会编译velocity，模拟转发url。
 
 	``` shell
-	$ normae release
+	$ hetalia release
 	```
 * qa模式，用于测试环境测试，会添加md5戳，打包，合成精灵图。
 
 	``` shell
-	$ normae release qa
+	$ hetalia release qa
 	```
 * prod模式，用于生产环境上线，会添加md5戳，打包，合成精灵图，压缩。
 
 	``` shell
-	$ normae release prod
+	$ hetalia release prod
 	```
-具体配置请参考[这里](https://github.com/vicerwang/normae/blob/master/index.js)。<br />
+具体配置请参考[这里](https://github.com/vicerwang/hetalia/blob/master/index.js)。<br />
 normae的三种release方式只提供了一些基本的匹配处理规则，如果想添加适合本项目的特殊规则，如具体的打包规则等，请在项目根目录下的fis-conf.js文件中添加规则来扩展或覆盖基本的规则。
 
 ### 按子系统release

@@ -1,28 +1,32 @@
 {
-  "name": "normae",
-  "version": "0.1.1",
-  "description": "front-end integrated solution of Lagou based on fis3",
+  "name": "hetalia",
+  "version": "0.1.0",
+  "description": "front-end integrated solution (based on fis3)",
   "main": "index.js",
   "bin": {
-    "normae": "bin/normae.js"
+    "hetalia": "bin/hetalia.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Lagou-Frontend/normae"
+    "url": "https://github.com/panjizhi/hetalia.git"
   },
   "keywords": [
-    "Lagou",
+    "font-end",
     "fis3"
   ],
-  "author": "vic",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Lagou-Frontend/normae/issues"
+  "author": { 
+    "name" : "panjizhi", 
+    "email" : "panjizhi1987@gmail.com", 
+    "url" : "https://github.com/panjizhi"
   },
-  "homepage": "https://github.com/Lagou-Frontend",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/panjizhi/hetalia/issues"
+  },
+  "homepage": "https://github.com/panjizhi/hetalia",
   "dependencies": {
     "fis-parser-less": "0.1.3",
     "fis-postprocessor-velocity": "0.0.5",
