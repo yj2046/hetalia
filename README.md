@@ -1,7 +1,7 @@
-# normae
-normae是基于[fis3](http://fis.baidu.com/fis3/index.html)的拉勾网前端解决方案
+# hetalia
+hetalia 是基于[fis3](http://fis.baidu.com/fis3/index.html)的拉勾网前端解决方案
 
-* 后端为Java＋Velocity
+* 后端采用 Java ＋ Velocity
 * 采用less作为css处理器
 * 采用amd模块化开发方案
 * 采用bower管理第三方依赖
@@ -60,19 +60,19 @@ site //能独立提供服务，具有单独二级域名的产品线
 
 ## 使用
 
-### 全局安装normae
+### 全局安装 hetalia
 
 ``` shell
-$ npm install normae -g
+$ npm install hetalia -g
 ```
 
-### 全局安装bower
+### 全局安装 bower
 
 ``` shell
 $ npm install bower -g
 ```
 
-### normae内置了3种release模式
+### hetalia 内置了3种release模式
 * 默认的dev模式，用于本地调试，会编译velocity，模拟转发url。
 
 	``` shell
