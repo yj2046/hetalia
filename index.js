@@ -1,6 +1,6 @@
 var fis = module.exports = require('fis3');
-fis.require.prefixes.unshift('normae');
-fis.cli.name = 'normae';
+fis.require.prefixes.unshift('hetalia');
+fis.cli.name = 'hetalia';
 fis.cli.info = require('./package.json');
 
 /******************** dev start ********************/

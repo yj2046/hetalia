@@ -89,7 +89,7 @@ $ npm install bower -g
 	$ hetalia release prod
 	```
 具体配置请参考[这里](https://github.com/vicerwang/hetalia/blob/master/index.js)。<br />
-normae的三种release方式只提供了一些基本的匹配处理规则，如果想添加适合本项目的特殊规则，如具体的打包规则等，请在项目根目录下的fis-conf.js文件中添加规则来扩展或覆盖基本的规则。
+hetalia的三种release方式只提供了一些基本的匹配处理规则，如果想添加适合本项目的特殊规则，如具体的打包规则等，请在项目根目录下的fis-conf.js文件中添加规则来扩展或覆盖基本的规则。
 
 ### 按子系统release
 随着子系统的增加，给我们的日常开发带来了以下两个问题
@@ -97,7 +97,7 @@ normae的三种release方式只提供了一些基本的匹配处理规则，如�
 1. 整个系统releae，时间越来越长，自动刷新功能总是延迟很多
 2. `fis-conf.js`，`server.conf`配置文件内容越来越多，变得难以维护
 
-因此，normae在v0.1.0将release的粒度改到子系统的层级，相应地需要在子系统目录下添加fis-conf.js以及server.conf来配置release规则和url转发规则，而根目录下的fis-conf.js以及server.conf则放置一些common的配置。通过修改根目录下的fis-conf.js文件中的releaseMods变量，来release所有子系统或者指定的子系统：
+因此，hetalia在v0.1.0将release的粒度改到子系统的层级，相应地需要在子系统目录下添加fis-conf.js以及server.conf来配置release规则和url转发规则，而根目录下的fis-conf.js以及server.conf则放置一些common的配置。通过修改根目录下的fis-conf.js文件中的releaseMods变量，来release所有子系统或者指定的子系统：
 
 ``` javascript
 var releaseMods = [ 'dashboard' ];
@@ -128,18 +128,18 @@ mods.forEach(function(mod) {
 需要注意以下几点：
 
 * 如果修改了子系统间共同依赖的资源，请release所有的子系统
-* 通过`-wL`参数开启监听改动自动刷新功能后，即使修改了子系统下的fis-conf.js文件，也不会被监听到，请重新输入`normae release -wL`release
+* 通过`-wL`参数开启监听改动自动刷新功能后，即使修改了子系统下的fis-conf.js文件，也不会被监听到，请重新输入`hetalia release -wL`release
 
 
 ### 本地调试
 ``` shell
-$ normae server start
+$ hetalia server start
 ```
 其他命令以及参数请参考[fis相关文档](http://fis.baidu.com/fis3/docs/beginning/debug.html#%E5%90%AF%E5%8A%A8)。
 
 * #### 模拟转发url
 
-	normae使用fis内置server默认的node server，同时开启模拟转发url功能，需要在项目根目录添加server.conf文件。<br />
+	hetalia使用fis内置server默认的node server，同时开启模拟转发url功能，需要在项目根目录添加server.conf文件。<br />
 	文件内容参考如下：
 
 	``` shell
@@ -196,7 +196,7 @@ $ normae server start
 我们并没有使用velocity模板自带的#parse语法，因为这种引入模板片段的方法只有在用户访问页面时，服务器才会将模板片段合并成一个完整的文件并编译输出，但是我们采用的是纯前端的解决方案，并没有扩展velocity模板的语法，是无法处理这种运行时的问题的，比如模板片段中引用资源的路径问题，以及无法将模板对css，js文件的引用链接最后统一放置在完整页面的合适位置，因此我们转而将合并模板片段的时间提前到发布期，借助fis的内容嵌入能力，实现了模板片段的开发分离，发布合并，事实上最后放到服务器上的是包括所有模板片段的完整的velocity模版页面。
 
 ### js加载方式
-normae采用的是amd的模块化开发方案，amd中require([])为异步加载的用法，而且作为加载入口文件时也只能使用这种用法，但是目前出于打包等方面的考虑，最后发布时的js加载方案使用的是把js放在body底部的同步加载方案，主要是通过设置fis-hook-amd插件的globalAsyncAsSync属性为true实现的，这样异步加载的js模块都会默认改为同步加载，那如果确实需要异步加载一个js模块怎么办，很简单：
+hetalia采用的是amd的模块化开发方案，amd中require([])为异步加载的用法，而且作为加载入口文件时也只能使用这种用法，但是目前出于打包等方面的考虑，最后发布时的js加载方案使用的是把js放在body底部的同步加载方案，主要是通过设置fis-hook-amd插件的globalAsyncAsSync属性为true实现的，这样异步加载的js模块都会默认改为同步加载，那如果确实需要异步加载一个js模块怎么办，很简单：
 
 ``` javascript
 // fis async
@@ -205,7 +205,7 @@ require(['./module/a'])
 加了这段注释的异步用法就是真正的异步用法了。
 
 ### 引入模块
-normae采用的是纯前端的解决方案，所以并没有对velocity模版进行扩展，因此不能直接引入独立的组件模块。以下面的目录为例：
+hetalia采用的是纯前端的解决方案，所以并没有对velocity模版进行扩展，因此不能直接引入独立的组件模块。以下面的目录为例：
 
 ```
 .
@@ -312,7 +312,7 @@ source code
 ```
 release code
 
-* ```normae release```
+* ```hetalia release```
 
 	``` html
 	<div>all release</div>
@@ -321,7 +321,7 @@ release code
 	<div>dev release</div>
 	<!-- fis-dev-end -->
 	```
-* ```normae release qa``` or ```normae release prod```
+* ```hetalia release qa``` or ```hetalia release prod```
 
 	``` html
 	<div>all release</div>

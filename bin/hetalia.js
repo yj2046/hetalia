@@ -4,9 +4,9 @@ var Liftoff = require('liftoff');
 var argv = require('minimist')(process.argv.slice(2));
 var path = require('path');
 var cli = new Liftoff({
-    name: 'normae',
-    processTitle: 'normae',
-    moduleName: 'normae',
+    name: 'hetalia',
+    processTitle: 'hetalia',
+    moduleName: 'hetalia',
     configName: 'fis-conf',
 
     extensions: {
@@ -25,7 +25,7 @@ function(env) {
     } else {
         fis = require(env.modulePath);
     }
-    fis.set('system.localNPMFolder', path.join(env.cwd, 'node_modules/normae'));
+    fis.set('system.localNPMFolder', path.join(env.cwd, 'node_modules/hetalia'));
     fis.set('system.globalNPMFolder', path.dirname(__dirname));
     fis.cli.run(argv, env);
 });
