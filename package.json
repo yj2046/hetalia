@@ -1,6 +1,6 @@
 {
   "name": "hetalia",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "front-end integrated solution (based on fis3)",
   "main": "index.js",
   "bin": {
@@ -17,10 +17,10 @@
     "font-end",
     "fis3"
   ],
-  "author": { 
-    "name" : "panjizhi", 
-    "email" : "panjizhi1987@gmail.com", 
-    "url" : "https://github.com/panjizhi"
+  "author": {
+    "name": "panjizhi",
+    "email": "panjizhi1987@gmail.com",
+    "url": "https://github.com/panjizhi"
   },
   "license": "UNLICENSED",
   "bugs": {
