@@ -1,3 +1,5 @@
+var path = require('path');
+var fs = require('fs');
 var fis = module.exports = require('fis3');
 fis.require.prefixes.unshift('hetalia');
 fis.cli.name = 'hetalia';
@@ -5,14 +7,14 @@ fis.cli.info = require('./package.json');
 
 /******************** dev start ********************/
 
-//dep文件夹为bower的下载目录，有大量的冗余资源，可能导致编译失败。
-//因此编译时屏蔽该目录，但是会自动找出其中被引用的资源。
+// dep文件夹为bower的下载目录，有大量的冗余资源，可能导致编译失败。
+// 因此编译时屏蔽该目录，但是会自动找出其中被引用的资源。
 fis.set('project.files', ['!dep/**']);
 
-//模块加载采用amd方案，对应在fis中使用fis3-hook-amd插件。
-//fis3-hook-amd：https://github.com/fex-team/fis3-hook-amd
-//esl.js是实现了amd规范子集的模块加载器。
-//esl.js：https://github.com/ecomfe/esl
+// 模块加载采用amd方案，对应在fis中使用fis3-hook-amd插件。
+// fis3-hook-amd：https://github.com/fex-team/fis3-hook-amd
+// esl.js是实现了amd规范子集的模块加载器。
+// esl.js：https://github.com/ecomfe/esl
 fis.hook('amd', {
     globalAsyncAsSync: true,
     paths: {
@@ -25,28 +27,64 @@ fis.match('*.html', {
 });
 
 fis.match('*.html', {
-    parser: function(content) {
-        var globalReg = /<!--\s*fis-([^-]+)-start\s*-->(.|[\r\n\t])*?<!--\s*fis-([^-]+)-end\s*-->/ig;
-        var reg       = /<!--\s*fis-([^-]+)-start\s*-->(.|[\r\n\t])*?<!--\s*fis-([^-]+)-end\s*-->/i;
+    parser: function (content, file) {
+        if (!content) {
+            return "";
+        }
+        content = processMedias(content);
+        content = processExtend(content);
+        console.log(content);
+        return content;
 
-        var arr = content.match(globalReg);
-        if(arr !== null) {
-            arr.forEach(function(code) {
-                var mediaInfo = code.match(reg);
-                if(mediaInfo[1] === mediaInfo[3]) {
-                    var medias = mediaInfo[1].split('|');
+        /**
+         * 模板继承语法糖：
+         *
+         * ##{extends file='parent.tpl'}
+         *
+         * ##{block name="title"}
+         * ##{/block}
+         */
+        function processExtend (str) { // 模板继承语法糖
+            var match = str.match(/##\{extends\s+file\s*=\s*["']([^'"]+)["']\s*\}/);
+            if (!match) {
+                return str;
+            }
+
+            var filePath = path.resolve(file.dirname, match[1]);
+            fs.accessSync(filePath, fs.R_OK);
+            var contents = fs.readFileSync(filePath, 'utf8');
+
+            return contents.replace(/##\{block\s+name\s*=\s*['"]([^'"]+)['"]\s*\}([\s\S]*?)##\{\/block\}/g, function (match, p1) {
+                var ret = str.match(new RegExp("##\\{block\\s+name\\s*=\\s*['\"]" + p1 + "['\"]\\s*\\}([\\s\\S]*?)##\\{\\/block\\}"));
+                return ret ? ret[1] : match;
+            });
+        }
+
+        function processMedias (str) { // 调试语句
+            var regexp = "<!--\\s*fis-([^-]+)-start\s*-->([\s\S]*?)<!--\\s*fis-([^-]+)-end\\s*-->";
+            var matches = str.match(new RegExp(regexp, 'ig'));
+
+            if (!matches) {
+                return str;
+            }
+
+            matches.forEach(function (code) {
+                var medias = code.match(new RegExp(regexp, 'i'));
+
+                if (medias[1] === medias[3]) {
                     var media = fis.project.currentMedia();
-                    if(medias.indexOf(media) === -1) {
-                        content = content.replace(code, '');
+                    if (Array.prototype.indexOf.call((medias[1]).split('|'), media) === -1) {
+                        str = str.replace(code, '');
                     }
                 }
             });
+
+            return str;
         }
-        return content;
     }
 });
 
-//less的混合样式文件，只会被其他less文件import，因此不需要单独发布。
+// less的混合样式文件，只会被其他less文件import，因此不需要单独发布。
 fis.match(/^(.*)mixin\.less$/i,{
     release: false
 });
@@ -56,14 +94,14 @@ fis.match('*.less', {
     rExt: '.css'
 });
 
-//widgets,modules,components和page文件夹下的js文件被认为是模块
-//编译时可以自动包裹factory函数：define(function(require, exports, module) {})
+// widgets,modules,components和page文件夹下的js文件被认为是模块
+// 编译时可以自动包裹factory函数：define(function(require, exports, module) {})
 fis.match('**/{widgets,modules,components,page}/**.js', {
     isMod: true
 });
 
-//本地开发期间，velocity模版需要结合mock文件被编译成html文件，需要fis-postprocessor-velocity插件。
-//fis-postprocessor-velocity：https://github.com/vicerwang/fis-postprocessor-velocity
+// 本地开发期间，velocity模版需要结合mock文件被编译成html文件，需要fis-postprocessor-velocity插件。
+// fis-postprocessor-velocity：https://github.com/vicerwang/fis-postprocessor-velocity
 fis.match('**/page/**.html', {
     postprocessor: fis.plugin('velocity', {
         commonMock: 'test/common/common.js'
@@ -83,33 +121,33 @@ fis.match('/test/**', {
     release: '/$0'
 });
 
-//在编译期会被内嵌入js文件中，因此不需要发布。
+// 在编译期会被内嵌入js文件中，因此不需要发布。
 fis.match('*.tpl',{
     release : false
 });
 
-//velocity模版对应的mock数据不需要发布。
+// velocity模版对应的mock数据不需要发布。
 fis.match('*.html.js', {
     release: false
 });
 
-//bower的package文件不需要发布。
+// bower的package文件不需要发布。
 fis.match('bower.json', {
     release: false
 });
 
-//文档不需要发布。
+// 文档不需要发布。
 fis.match('*.md', {
     release: false
 });
 
-//fis配置文件不需要发布。
+// fis配置文件不需要发布。
 fis.match('fis-conf.js', {
     useCache: false,
     release: false
 });
 
-//本地调试时，需要将所有子系统下面的server.conf合并到根目录下的server.conf文件，最后发布到config文件夹下。
+// 本地调试时，需要将所有子系统下面的server.conf合并到根目录下的server.conf文件，最后发布到config文件夹下。
 fis.match('/server.conf', {
     postprocessor: function(content, file) {
         content = '';
@@ -123,8 +161,8 @@ fis.match('/server.conf', {
     release: '/config/server.conf'
 });
 
-//打包的资源类型设置为amd，需要fis3-postpackager-loader插件。
-//fis3-postpackager-loader：https://github.com/fex-team/fis3-postpackager-loader
+// 打包的资源类型设置为amd，需要fis3-postpackager-loader插件。
+// fis3-postpackager-loader：https://github.com/fex-team/fis3-postpackager-loader
 fis.match('::package', {
     postpackager: fis.plugin('loader', {
         resourceType: 'amd',
@@ -153,7 +191,7 @@ fis.media('qa').match('**/page/**.html', {
     postprocessor: null
 });
 
-//example不需要发布。
+// example不需要发布。
 fis.media('qa').match('/example/**', {
     release: false
 });
