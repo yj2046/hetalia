@@ -27,45 +27,55 @@ fis.match('*.html', {
 });
 
 fis.match('*.html', {
-    parser: function (content, file) {
+    parser: function (content, fileObj) {
         if (!content) {
             return "";
         }
         content = processMedias(content);
         content = processExtend(content);
-        console.log(content);
         return content;
 
         /**
          * 模板继承语法糖：
          *
+         * 1) extends语法
          * ##{extends file='parent.tpl'}
          *
+         * 2) block语法
          * ##{block name="title"}
          * ##{/block}
          */
-        function processExtend (str) { // 模板继承语法糖
-            var match = str.match(/##\{extends\s+file\s*=\s*["']([^'"]+)["']\s*\}/);
-            if (!match) {
-                return str;
+        function processExtend (tplContent) { // 模板继承语法糖
+            var extendsMatch = tplContent.match(/##\{extends\s+file\s*=\s*["']([^'"]+)["']\s*\}/);
+            if (!extendsMatch) {
+                return tplContent;
             }
 
-            var filePath = path.resolve(file.dirname, match[1]);
-            fs.accessSync(filePath, fs.R_OK);
-            var contents = fs.readFileSync(filePath, 'utf8');
+            var filePath = path.resolve(fileObj.dirname, extendsMatch[1]);
+            fs.accessSync(filePath, fs.R_OK); // 确保父级模板有效
+            var parentTplContent = fs.readFileSync(filePath, 'utf8');
 
-            return contents.replace(/##\{block\s+name\s*=\s*['"]([^'"]+)['"]\s*\}([\s\S]*?)##\{\/block\}/g, function (match, p1) {
-                var ret = str.match(new RegExp("##\\{block\\s+name\\s*=\\s*['\"]" + p1 + "['\"]\\s*\\}([\\s\\S]*?)##\\{\\/block\\}"));
-                return ret ? ret[1] : match;
+            var preRegExp = "##\\{block\\s+name\\s*=\\s*['\"]";
+            var sufRegExp = "['\"]\\s*\\}([\\s\\S]*?)##\\{\\/block\\}";
+            return parentTplContent.replace(new RegExp(preRegExp + "([^'\"]+)" + sufRegExp, "g"), function (allMatches, name) {
+                var blockMatches = tplContent.match(new RegExp(preRegExp + name + sufRegExp));
+                return blockMatches ? blockMatches[1] : allMatches;
             });
         }
 
-        function processMedias (str) { // 调试语句
-            var regexp = "<!--\\s*fis-([^-]+)-start\s*-->([\s\S]*?)<!--\\s*fis-([^-]+)-end\\s*-->";
-            var matches = str.match(new RegExp(regexp, 'ig'));
+        /**
+         * fis调试语法: 不同的media取值，执行不同的代码段。
+         * 
+         * 语法如下:
+         * <!-- fis-dev-start --> xxx <!-- fis-dev-end -->
+         * 当 media = "dev" (默认值)，执行"xxx"代码段
+         */
+        function processMedias (tplContent) { // 调试语句
+            var regexp = "<!--\\s*fis-([^-]+)-start\\s*-->([\\s\\S]*?)<!--\\s*fis-([^-]+)-end\\s*-->";
+            var matches = tplContent.match(new RegExp(regexp, 'ig'));
 
             if (!matches) {
-                return str;
+                return tplContent;
             }
 
             matches.forEach(function (code) {
@@ -74,12 +84,12 @@ fis.match('*.html', {
                 if (medias[1] === medias[3]) {
                     var media = fis.project.currentMedia();
                     if (Array.prototype.indexOf.call((medias[1]).split('|'), media) === -1) {
-                        str = str.replace(code, '');
+                        tplContent = tplContent.replace(code, '');
                     }
                 }
             });
 
-            return str;
+            return tplContent;
         }
     }
 });
