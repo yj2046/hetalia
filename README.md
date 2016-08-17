@@ -1,5 +1,5 @@
 # hetalia
-hetalia 是基于[fis3](http://fis.baidu.com/fis3/index.html)的拉勾网前端解决方案
+hetalia 是基于[fis3](http://fis.baidu.com/fis3/index.html)的前端解决方案
 
 * 后端采用 Java ＋ Velocity
 * 采用less作为css处理器
@@ -88,7 +88,7 @@ $ npm install bower -g
 	``` shell
 	$ hetalia release prod
 	```
-具体配置请参考[这里](https://github.com/vicerwang/hetalia/blob/master/index.js)。<br />
+具体配置请参考[这里](https://github.com/panjizhi/hetalia/blob/master/index.js)。<br />
 hetalia的三种release方式只提供了一些基本的匹配处理规则，如果想添加适合本项目的特殊规则，如具体的打包规则等，请在项目根目录下的fis-conf.js文件中添加规则来扩展或覆盖基本的规则。
 
 ### 按子系统release
@@ -97,7 +97,7 @@ hetalia的三种release方式只提供了一些基本的匹配处理规则，如
 1. 整个系统releae，时间越来越长，自动刷新功能总是延迟很多
 2. `fis-conf.js`，`server.conf`配置文件内容越来越多，变得难以维护
 
-因此，hetalia在v0.1.0将release的粒度改到子系统的层级，相应地需要在子系统目录下添加fis-conf.js以及server.conf来配置release规则和url转发规则，而根目录下的fis-conf.js以及server.conf则放置一些common的配置。通过修改根目录下的fis-conf.js文件中的releaseMods变量，来release所有子系统或者指定的子系统：
+因此，hetalia在v0.1.0将release的粒度改到子系统的层级，相应地需要在子系统目录下添加 fis-conf.js 以及 server.conf 来配置 release 规则和 url 转发规则，而根目录下的 fis-conf.js 以及 server.conf 则放置一些 common 配置。通过修改根目录下的 fis-conf.js 文件中的 releaseMods 变量，来 release 所有子系统或者指定的子系统：
 
 ``` javascript
 var releaseMods = [ 'dashboard' ];
@@ -128,7 +128,7 @@ mods.forEach(function(mod) {
 需要注意以下几点：
 
 * 如果修改了子系统间共同依赖的资源，请release所有的子系统
-* 通过`-wL`参数开启监听改动自动刷新功能后，即使修改了子系统下的fis-conf.js文件，也不会被监听到，请重新输入`hetalia release -wL`release
+* 通过`-wL`参数开启监听改动自动刷新功能后，即使修改了子系统下的 fis-conf.js 文件，也不会被监听到，请重新输入`hetalia release -wL`release
 
 
 ### 本地调试
