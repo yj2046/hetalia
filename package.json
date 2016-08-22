@@ -1,6 +1,6 @@
 {
   "name": "hetalia",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "front-end integrated solution (based on fis3)",
   "main": "index.js",
   "bin": {
