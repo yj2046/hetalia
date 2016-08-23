@@ -22,10 +22,9 @@ fis.hook('amd', {
     }
 });
 
-fis.match('*.html', {
-    lint: fis.plugin('html')
-});
-
+// 模板预处理：
+// 1) 根据 media 参数选择执行代码段
+// 2) 实现模板继承语法糖
 fis.match('*.html', {
     parser: function (content, fileObj) {
         if (!content) {
@@ -94,7 +93,7 @@ fis.match('*.html', {
     }
 });
 
-// less的混合样式文件，只会被其他less文件import，因此不需要单独发布。
+// less 混合样式文件，只会被其他less文件import，因此不需要单独发布。
 fis.match(/^(.*)mixin\.less$/i,{
     release: false
 });
@@ -104,7 +103,7 @@ fis.match('*.less', {
     rExt: '.css'
 });
 
-// widgets,modules,components和page文件夹下的js文件被认为是模块
+// widgets, modules, components和page文件夹下的js文件被认为是模块
 // 编译时可以自动包裹factory函数：define(function(require, exports, module) {})
 fis.match('**/{widgets,modules,components,page}/**.js', {
     isMod: true
