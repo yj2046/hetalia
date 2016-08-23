@@ -173,20 +173,20 @@ fis.match('/server.conf', {
 // cdn容灾：运维实时更新静态资源CDN域名
 // 模板中的velocity变量名: $!{domain.getStaticDomain()}
 // js中的变量名: GLOBAL_CDN_DOMAIN
-fis.match('*.js', {
-    postprocessor: function(content, fileObj) {
-        return content.replace(/['"]([^'"]*)\$\!\{domain\.getStaticDomain\(\s*\)\}([^'"]*)['"]/g, "'" + "$1" + "' + GLOBAL_CDN_DOMAIN + '" + "$2" + "'");
-    }
-});
+// fis.match('*.js', {
+//     postprocessor: function(content, fileObj) {
+//         return content.replace(/['"]([^'"]*)\$\!\{domain\.getStaticDomain\(\s*\)\}([^'"]*)['"]/g, "'" + "$1" + "' + GLOBAL_CDN_DOMAIN + '" + "$2" + "'");
+//     }
+// });
 
 // cdn容灾：运维实时更新静态资源CDN域名
 // 模板中的velocity变量名: $!{domain.getStaticDomain()}
-// css文件中取 www.lgstatic.com，域名切换时由运维完成文本替换
-fis.match('*.{less,css}', {
-    postprocessor: function(content, fileObj) {
-        return content.replace(/\$\!\{domain\.getStaticDomain\(\s*\)\}/g, 'www.lgstatic.com');
-    }
-});
+// css文件中取 www.cdnstatic.com，域名切换时由运维完成文本替换
+// fis.match('*.{less,css}', {
+//     postprocessor: function(content, fileObj) {
+//         return content.replace(/\$\!\{domain\.getStaticDomain\(\s*\)\}/g, 'www.cdnstatic.com');
+//     }
+// });
 
 // 打包的资源类型设置为amd，需要fis3-postpackager-loader插件。
 // fis3-postpackager-loader：https://github.com/fex-team/fis3-postpackager-loader
