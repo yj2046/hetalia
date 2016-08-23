@@ -179,6 +179,15 @@ fis.match('*.js', {
     }
 });
 
+// cdn容灾：运维实时更新静态资源CDN域名
+// 模板中的velocity变量名: $!{domain.getStaticDomain()}
+// css文件中取 www.lgstatic.com，域名切换时由运维完成文本替换
+fis.match('*.{less,css}', {
+    postprocessor: function(content, fileObj) {
+        return content.replace(/\$\!\{domain\.getStaticDomain\(\s*\)\}/g, 'www.lgstatic.com');
+    }
+});
+
 // 打包的资源类型设置为amd，需要fis3-postpackager-loader插件。
 // fis3-postpackager-loader：https://github.com/fex-team/fis3-postpackager-loader
 fis.match('::package', {
