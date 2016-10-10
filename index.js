@@ -50,7 +50,14 @@ fis.match('*.html', {
                 return tplContent;
             }
 
-            var filePath = path.resolve(fileObj.dirname, extendsMatch[1]);
+            var relPath = extendsMatch[1];
+            var filePath = '';
+            if ( relPath.charAt(0) === '/' ) { // 相对 project 根目录
+                filePath = path.resolve(fis.project.getProjectPath(), relPath.replace(/^[/]+/, ''));
+            } else {
+                filePath = path.resolve(fileObj.dirname, relPath);
+            }
+
             fs.accessSync(filePath, fs.R_OK); // 确保父级模板有效
             var parentTplContent = fs.readFileSync(filePath, 'utf8');
 
